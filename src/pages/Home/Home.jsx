@@ -28,7 +28,7 @@ export default function Home() {
       <header className={`${styles.navbar} ${scrolled ? styles.navbarScrolled : ""}`}>
         <a href="/" className={styles.logo}>
           <span className={styles.logoIcon}>◈</span>
-          <span className={styles.logoText}>QuadrasPro</span>
+          <span className={styles.logoText}>Voleio - Aluguéis de Quadras</span>
         </a>
 
         <nav className={`${styles.navLinks} ${menuOpen ? styles.navOpen : ""}`}>
@@ -56,7 +56,7 @@ export default function Home() {
       <section className={styles.hero}>
         <div className={styles.heroTop}>
           <img
-            src="/images/quadra-tenis.jpg"
+            src="/images/quadra-tennis.jpg"
             alt="Quadra de tênis"
             className={styles.heroImg}
           />
