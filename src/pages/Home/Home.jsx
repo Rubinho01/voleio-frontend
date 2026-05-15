@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import styles from "./Home.module.css";
+import { Link } from 'react-router-dom'
 
 const NAV_LINKS = [
   { label: "Sobre", href: "#sobre" },
@@ -37,9 +38,9 @@ export default function Home() {
               {link.label}
             </a>
           ))}
-          <a href="/login" className={styles.navCta}>
+          <Link to="/login" className={styles.navCta}>
             Fazer Login
-          </a>
+          </Link>
         </nav>
 
         <button
