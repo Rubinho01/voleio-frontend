@@ -1,0 +1,234 @@
+.page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-image: url("/images/quadra-indoor.jpg");
+  background-size: cover;
+  background-position: center;
+  font-family: "Segoe UI", sans-serif;
+}
+
+.navbar {
+  display: flex;
+  justify-content: flex-end;
+  padding: 1rem 2.5rem;
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.navLinks {
+  display: flex;
+  gap: 1.8rem;
+  align-items: center;
+}
+
+.navLink {
+  color: #fff;
+  text-decoration: none;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.navIcon {
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 1.1rem;
+  cursor: pointer;
+}
+
+.main {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.card {
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(6px);
+  border-radius: 20px;
+  display: flex;
+  gap: 2rem;
+  padding: 2.5rem;
+  max-width: 900px;
+  width: 100%;
+}
+
+.cardLeft {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.cardRight {
+  flex: 1;
+}
+
+.quadraImg {
+  width: 100%;
+  height: 100%;
+  max-height: 460px;
+  object-fit: cover;
+  border-radius: 12px;
+}
+
+.titulo {
+  font-size: 2rem;
+  font-weight: 900;
+  color: #fff;
+  margin: 0;
+}
+
+.info {
+  font-size: 1.1rem;
+  color: #c8e6c9;
+  margin: 0;
+}
+
+.inputWrapper {
+  position: relative;
+  background: #fff;
+  border-radius: 10px;
+  padding: 0.6rem 1rem;
+}
+
+.inputLabel {
+  display: block;
+  font-size: 0.72rem;
+  color: #888;
+  margin-bottom: 0.15rem;
+}
+
+.input {
+  width: 100%;
+  border: none;
+  outline: none;
+  font-size: 0.95rem;
+  color: #222;
+  background: transparent;
+  padding-right: 2rem;
+}
+
+.check {
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #2e7d32;
+  font-size: 1rem;
+}
+
+.diasRow {
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.diaBtn {
+  background: #1b5e20;
+  border: none;
+  border-radius: 20px;
+  color: #fff;
+  padding: 0.3rem 0.8rem;
+  font-size: 0.78rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.diaBtnAtivo {
+  background: #111;
+  color: #fff;
+}
+
+.horarioBox {
+  background: rgba(255,255,255,0.15);
+  border-radius: 10px;
+  padding: 0.7rem 1rem;
+}
+
+.horarioTitulo {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #fff;
+  margin: 0 0 0.3rem;
+}
+
+.horarioInfo {
+  font-size: 0.85rem;
+  color: #c8e6c9;
+  margin: 0;
+}
+
+.btnReservar {
+  background: #111;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 0.85rem;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s;
+  margin-top: 0.5rem;
+}
+
+.btnReservar:hover {
+  background: #333;
+}
+
+.btnReservar:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.erro {
+  color: #ffcdd2;
+  font-size: 0.85rem;
+}
+
+.sucessoBox {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  color: #fff;
+}
+
+.btnVoltar {
+  background: #2e7d32;
+  color: #fff;
+  padding: 0.8rem 2rem;
+  border-radius: 10px;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.2rem 2.5rem;
+  background: rgba(0,0,0,0.4);
+}
+
+.footerCopy {
+  color: #fff;
+  font-size: 0.82rem;
+}
+
+.footerSocial {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.footerLink {
+  color: #fff;
+  text-decoration: none;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+}
