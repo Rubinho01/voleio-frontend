@@ -177,3 +177,15 @@
   font-size: 0.85rem;
   text-transform: uppercase;
 }
+
+.msg {
+  color: #fff;
+  font-size: 1rem;
+  margin-bottom: 1rem;
+}
+
+.msgErro {
+  color: #ff5252;
+  font-size: 1rem;
+  margin-bottom: 1rem;
+}

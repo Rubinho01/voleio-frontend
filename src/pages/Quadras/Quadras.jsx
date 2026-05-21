@@ -1,4 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
 import styles from "./Quadras.module.css";
 
 const NAV_LINKS = [
@@ -16,40 +18,33 @@ const SOCIAL_LINKS = [
   { label: "Whatsapp", href: "#" },
 ];
 
-// Dados mockados — substituir pela API quando backend estiver pronto
-const QUADRAS_MOCK = [
-  {
-    id: 1,
-    reference: "Quadra 1",
-    priceOfReference: 100.0,
-    address: "Rua X",
-    timeReference: 60,
-    image: "/images/quadras-de-tenis-cobertas-modalidades-4d.jpg",
-  },
-  {
-    id: 2,
-    reference: "Quadra 2",
-    priceOfReference: 120.0,
-    address: "Rua Y",
-    timeReference: 60,
-    image: "/images/quadra-indoor.jpg",
-  },
-  {
-    id: 3,
-    reference: "Quadra 3",
-    priceOfReference: 90.0,
-    address: "Rua Z",
-    timeReference: 60,
-    image: "/images/como-montar-quadra-de-tenisd.jpg",
-  },
-];
-
 export default function Quadras() {
+  const { token } = useAuth();
+  const navigate = useNavigate();
+  const [quadras, setQuadras] = useState([]);
   const [busca, setBusca] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [erro, setErro] = useState("");
 
-  const quadrasFiltradas = QUADRAS_MOCK.filter((q) =>
-    q.reference.toLowerCase().includes(busca.toLowerCase()) ||
-    q.address.toLowerCase().includes(busca.toLowerCase())
+  useEffect(() => {
+    if (!token) {
+      navigate("/login");
+      return;
+    }
+    fetch("/api/courts/all", {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then((r) => {
+        if (!r.ok) throw new Error("Erro ao buscar quadras.");
+        return r.json();
+      })
+      .then((data) => setQuadras(data))
+      .catch((e) => setErro(e.message))
+      .finally(() => setLoading(false));
+  }, [token, navigate]);
+
+  const quadrasFiltradas = quadras.filter((q) =>
+    q.reference.toLowerCase().includes(busca.toLowerCase())
   );
 
   return (
@@ -78,6 +73,9 @@ export default function Quadras() {
           <button className={styles.filterBtn}>⚙</button>
         </div>
 
+        {loading && <p className={styles.msg}>Carregando quadras...</p>}
+        {erro && <p className={styles.msgErro}>{erro}</p>}
+
         <div className={styles.grid}>
           {quadrasFiltradas.map((quadra) => (
             <a key={quadra.id} href={`/reservar/${quadra.id}`} className={styles.card}>
@@ -87,20 +85,20 @@ export default function Quadras() {
                 </span>
               </div>
               <img
-                src={quadra.image}
+                src="/images/quadra-tennis.jpg"
                 alt={quadra.reference}
                 className={styles.cardImg}
               />
               <div className={styles.cardBody}>
                 <p className={styles.cardInfo}>
-                  <strong>PREÇO: R$ {quadra.priceOfReference.toFixed(2).replace(".", ",")}</strong>
+                  <strong>PREÇO: R$ {Number(quadra.priceOfReference).toFixed(2).replace(".", ",")}</strong>
                 </p>
                 <p className={styles.cardInfo}>
-                  <strong>ENDEREÇO: {quadra.address}</strong>
+                  <strong>TEMPO: {quadra.timeReference} min</strong>
                 </p>
                 <div className={styles.cardFooter}>
                   <span className={styles.cardTempo}>
-                    Tempo: {quadra.timeReference}min
+                    {quadra.startTime} – {quadra.endTime}
                   </span>
                   <button className={styles.infoBtn}>ℹ</button>
                 </div>
