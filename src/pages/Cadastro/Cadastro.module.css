@@ -1,0 +1,245 @@
+.page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-image: url("/images/como-montar-quadra-de-tenisd.jpg");
+  background-size: cover;
+  background-position: center;
+  font-family: "Segoe UI", sans-serif;
+}
+
+.navbar {
+  display: flex;
+  justify-content: flex-end;
+  padding: 1.2rem 2.5rem;
+}
+
+.navLinks {
+  display: flex;
+  gap: 2rem;
+  align-items: center;
+}
+
+.navLink {
+  color: #fff;
+  text-decoration: none;
+  font-size: 0.95rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.main {
+  flex: 1;
+  display: flex;
+  gap: 2rem;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 2rem 4rem;
+  flex-wrap: wrap;
+}
+
+.card {
+  background: #fff;
+  border-radius: 20px;
+  padding: 2rem 2.5rem;
+  width: 100%;
+  max-width: 460px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+
+.title {
+  font-size: 1.4rem;
+  font-weight: 500;
+  color: #7ec8a0;
+  text-align: center;
+  margin-bottom: 0.5rem;
+}
+
+.inputWrapper {
+  position: relative;
+  border: 1.5px solid #ccc;
+  border-radius: 10px;
+  padding: 0.5rem 1rem;
+}
+
+.inputLabel {
+  display: block;
+  font-size: 0.72rem;
+  color: #888;
+  margin-bottom: 0.15rem;
+}
+
+.input {
+  width: 100%;
+  border: none;
+  outline: none;
+  font-size: 0.95rem;
+  color: #222;
+  background: transparent;
+  padding-right: 3rem;
+}
+
+.select {
+  border: none;
+  outline: none;
+  font-size: 0.95rem;
+  background: transparent;
+  color: #222;
+  width: 100%;
+}
+
+.check {
+  position: absolute;
+  right: 2.8rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #2e7d32;
+  font-size: 1rem;
+}
+
+.eyeBtn {
+  position: absolute;
+  right: 0.8rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+  color: #888;
+}
+
+.opcional {
+  position: absolute;
+  right: 2.5rem;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 0.78rem;
+  color: #aaa;
+}
+
+.hint {
+  font-size: 0.75rem;
+  color: #888;
+  margin-top: -0.5rem;
+  padding-left: 0.3rem;
+}
+
+.telefoneRow {
+  display: flex;
+  gap: 0.7rem;
+}
+
+.ddi {
+  width: 90px;
+  flex-shrink: 0;
+}
+
+.telefoneInput {
+  flex: 1;
+}
+
+.rowDois {
+  display: flex;
+  gap: 0.7rem;
+}
+
+.rowDois .inputWrapper {
+  flex: 1;
+}
+
+.esportesRow {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  padding: 0.3rem 0;
+}
+
+.esportesLabel {
+  font-size: 0.88rem;
+  color: #444;
+}
+
+.esporteItem {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.88rem;
+  color: #444;
+  cursor: pointer;
+}
+
+.radio {
+  accent-color: #e53935;
+  width: 15px;
+  height: 15px;
+}
+
+.btnSalvar {
+  background: #7ec8a0;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 0.85rem;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+  margin-top: 0.5rem;
+}
+
+.btnSalvar:hover {
+  background: #2e7d32;
+}
+
+.btnSalvar:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.erro {
+  color: #e53935;
+  font-size: 0.85rem;
+  text-align: center;
+}
+
+.terms {
+  font-size: 0.75rem;
+  color: #888;
+  text-align: center;
+}
+
+.footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.2rem 2.5rem;
+}
+
+.footerCopy {
+  color: #fff;
+  font-size: 0.82rem;
+}
+
+.footerSocial {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.footerLink {
+  color: #fff;
+  text-decoration: none;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+}
+
+.navbar {
+  display: flex;
+  justify-content: flex-end;
+  padding: 1.2rem 2.5rem;
+  background: rgba(0, 0, 0, 0.3);
+}
