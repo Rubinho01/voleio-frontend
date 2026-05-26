@@ -6,6 +6,7 @@ import MinhasReservas from './pages/MinhasReservas/MinhasReservas'
 import ReservarQuadra from './pages/ReservarQuadra/ReservarQuadra'
 import Quadras from './pages/Quadras/Quadras'
 import Cadastro from './pages/Cadastro/Cadastro'
+import Dashboard from './pages/Dashboard/Dashboard'
 
 export default function App() {
   return (
@@ -18,6 +19,7 @@ export default function App() {
         <Route path="/reservar/:id" element={<ReservarQuadra />} />
         <Route path="/quadras" element={<Quadras />} />
         <Route path="/cadastro" element={<Cadastro />} />
+        <Route path="/dashboard" element={<Dashboard />} />
       </Routes>
     </BrowserRouter>
   )
