@@ -28,9 +28,7 @@ export default function Login() {
 
     try {
       const data = await loginRequest(fields.email, fields.password);
-      login(data.token);
-      // Redirecione conforme sua necessidade:
-      // navigate("/dashboard") se usar React Router
+      login(data.token, {role: data.roles, id:data.id});
       window.location.href = "/dashboard";
     } catch (err) {
       setError(err.message);
