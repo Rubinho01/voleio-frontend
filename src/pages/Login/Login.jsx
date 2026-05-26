@@ -28,8 +28,13 @@ export default function Login() {
 
     try {
       const data = await loginRequest(fields.email, fields.password);
+      console.log(data.roles);
       login(data.token, {role: data.roles, id:data.id});
-      window.location.href = "/dashboard";
+      if(data.roles.includes('ROLE_ADMINISTRATOR')){
+        return window.location.href = "/dashboard";
+      }else{
+        return window.location.href = "/quadras";
+      }
     } catch (err) {
       setError(err.message);
     } finally {
