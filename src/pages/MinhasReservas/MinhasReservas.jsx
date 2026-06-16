@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useAuth } from "../../context/AuthContext";
 import styles from "./MinhasReservas.module.css";
 
 const NAV_LINKS = [
@@ -16,35 +17,41 @@ const SOCIAL_LINKS = [
   { label: "Whatsapp", href: "#" },
 ];
 
-// Dados mockados — substituir pela API quando backend estiver pronto
-const RESERVAS_MOCK = [
-  {
-    id: 1,
-    courtName: "Quadra 5",
-    date: "18/04/2026",
-    address: "Rua Y",
-    startTime: "19:00",
-    endTime: "20:00",
-    image: "/images/quadras-de-tenis-cobertas-modalidades-4d.jpg",
-  },
-  {
-    id: 2,
-    courtName: "Quadra 2",
-    date: "25/04/2026",
-    address: "Rua Z",
-    startTime: "20:00",
-    endTime: "21:00",
-    image: "/images/brasscourt-quadras.png",
-  },
-];
-
 export default function MinhasReservas() {
+  const { token } = useAuth();
+  const [passadas, setPassadas] = useState([]);
+  const [proximas, setProximas] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [erro, setErro] = useState("");
   const [busca, setBusca] = useState("");
+  const [aba, setAba] = useState("proximas");
 
-  const reservasFiltradas = RESERVAS_MOCK.filter((r) =>
-    r.courtName.toLowerCase().includes(busca.toLowerCase()) ||
-    r.address.toLowerCase().includes(busca.toLowerCase())
+  useEffect(() => {
+    if (!token) return;
+    fetch("/api/reservations/my-reservations", {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then((r) => {
+        if (!r.ok) throw new Error("Erro ao buscar reservas.");
+        return r.json();
+      })
+      .then((data) => {
+        setProximas(data.upcomingRentals || []);
+        setPassadas(data.pastRentals || []);
+      })
+      .catch((e) => setErro(e.message))
+      .finally(() => setLoading(false));
+  }, [token]);
+
+  const reservasFiltradas = (aba === "proximas" ? proximas : passadas).filter((r) =>
+    r.courtName.toLowerCase().includes(busca.toLowerCase())
   );
+
+  const formatarData = (data) => {
+    if (!data) return "";
+    const [ano, mes, dia] = data.split("-");
+    return `${dia}/${mes}/${ano}`;
+  };
 
   return (
     <div className={styles.page}>
@@ -72,25 +79,44 @@ export default function MinhasReservas() {
           <button className={styles.filterBtn}>⚙</button>
         </div>
 
+        <div className={styles.abasRow}>
+          <button
+            className={`${styles.aba} ${aba === "proximas" ? styles.abaAtiva : ""}`}
+            onClick={() => setAba("proximas")}
+          >
+            Próximas ({proximas.length})
+          </button>
+          <button
+            className={`${styles.aba} ${aba === "passadas" ? styles.abaAtiva : ""}`}
+            onClick={() => setAba("passadas")}
+          >
+            Passadas ({passadas.length})
+          </button>
+        </div>
+
+        {loading && <p className={styles.msg}>Carregando reservas...</p>}
+        {erro && <p className={styles.msgErro}>{erro}</p>}
+
+        {!loading && reservasFiltradas.length === 0 && (
+          <p className={styles.msg}>Nenhuma reserva encontrada.</p>
+        )}
+
         <div className={styles.grid}>
-          {reservasFiltradas.map((reserva) => (
-            <div key={reserva.id} className={styles.card}>
+          {reservasFiltradas.map((reserva, index) => (
+            <div key={index} className={styles.card}>
               <div className={styles.cardHeader}>
                 <span className={styles.cardTitle}>
                   {reserva.courtName.toUpperCase().split("").join(" ")}
                 </span>
               </div>
               <img
-                src={reserva.image}
+                src="/images/quadra-tennis.jpg"
                 alt={reserva.courtName}
                 className={styles.cardImg}
               />
               <div className={styles.cardBody}>
                 <p className={styles.cardInfo}>
-                  <strong>DATA: {reserva.date}</strong>
-                </p>
-                <p className={styles.cardInfo}>
-                  <strong>ENDEREÇO: {reserva.address}</strong>
+                  <strong>DATA: {formatarData(reserva.date)}</strong>
                 </p>
                 <div className={styles.cardFooter}>
                   <span className={styles.cardHorario}>

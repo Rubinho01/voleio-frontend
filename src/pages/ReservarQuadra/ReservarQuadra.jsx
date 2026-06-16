@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
 import styles from "./ReservarQuadra.module.css";
 
 const NAV_LINKS = [
@@ -17,83 +18,78 @@ const SOCIAL_LINKS = [
   { label: "Whatsapp", href: "#" },
 ];
 
-// Dados mockados — substituir pela API quando backend estiver pronto
-const QUADRAS_MOCK = {
-  1: {
-    id: 1,
-    reference: "Quadra 1",
-    priceOfReference: 100.0,
-    address: "Rua X",
-    timeReference: 60,
-    image: "/images/quadras-de-tenis-cobertas-modalidades-4d.jpg",
-    startTime: "19:00",
-    endTime: "20:00",
-  },
-  2: {
-    id: 2,
-    reference: "Quadra 2",
-    priceOfReference: 120.0,
-    address: "Rua Y",
-    timeReference: 60,
-    image: "/images/quadra-indoor.jpg",
-    startTime: "20:00",
-    endTime: "21:00",
-  },
-  3: {
-    id: 3,
-    reference: "Quadra 3",
-    priceOfReference: 90.0,
-    address: "Rua Z",
-    timeReference: 60,
-    image: "/images/como-montar-quadra-de-tenisd.jpg",
-    startTime: "19:00",
-    endTime: "20:00",
-  },
-};
-
-const DIAS_SEMANA = ["DOM", "SEG", "TER", "QUA", "QUI", "SEX", "SAB"];
-
 export default function ReservarQuadra() {
   const { id } = useParams();
-  const quadra = QUADRAS_MOCK[id] || QUADRAS_MOCK[1];
+  const { token } = useAuth();
 
-  const [nomeReserva, setNomeReserva] = useState("");
+  const [quadra, setQuadra] = useState(null);
+  const [horariosDisponiveis, setHorariosDisponiveis] = useState([]);
+  const [horarioSelecionado, setHorarioSelecionado] = useState("");
   const [data, setData] = useState("");
-  const [diaSelecionado, setDiaSelecionado] = useState("SAB");
   const [erro, setErro] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [loadingHorarios, setLoadingHorarios] = useState(false);
+  const [salvando, setSalvando] = useState(false);
   const [sucesso, setSucesso] = useState(false);
 
-  const nomeValido = nomeReserva.trim().length > 1;
+  // Busca dados da quadra
+  useEffect(() => {
+    fetch("/api/courts/all", {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then((r) => r.json())
+      .then((data) => {
+        const found = data.find((q) => q.id === Number(id));
+        setQuadra(found || null);
+      })
+      .catch(() => setErro("Erro ao buscar quadra."))
+      .finally(() => setLoading(false));
+  }, [id, token]);
+
+  // Busca horários disponíveis quando data muda
+  useEffect(() => {
+    if (!data || !id) return;
+    setLoadingHorarios(true);
+    setHorariosDisponiveis([]);
+    setHorarioSelecionado("");
+
+    fetch(`/api/reservations/available?date=${data}&courtId=${id}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then((r) => r.json())
+      .then((times) => setHorariosDisponiveis(times))
+      .catch(() => setErro("Erro ao buscar horários."))
+      .finally(() => setLoadingHorarios(false));
+  }, [data, id, token]);
 
   const handleReservar = async () => {
     setErro("");
-    if (!nomeValido) {
-      setErro("Informe o nome da reserva."); return;
-    }
-    if (!data) {
-      setErro("Selecione uma data."); return;
-    }
-    setLoading(true);
+    if (!data) { setErro("Selecione uma data."); return; }
+    if (!horarioSelecionado) { setErro("Selecione um horário."); return; }
+
+    setSalvando(true);
     try {
-      // TODO: substituir pelo endpoint real quando backend estiver pronto
-      // await fetch("/api/rentals", {
-      //   method: "POST",
-      //   headers: { "Content-Type": "application/json" },
-      //   body: JSON.stringify({
-      //     courtId: quadra.id,
-      //     rentalName: nomeReserva,
-      //     date: data,
-      //     startTime: quadra.startTime,
-      //     endTime: quadra.endTime,
-      //   }),
-      // });
-      await new Promise((r) => setTimeout(r, 800)); // simula chamada API
+      const res = await fetch("/api/reservations/new", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          reservationDate: data,
+          courtId: Number(id),
+          startTime: horarioSelecionado,
+        }),
+      });
+      if (!res.ok) {
+        const msg = await res.text();
+        throw new Error(msg || "Erro ao criar reserva.");
+      }
       setSucesso(true);
     } catch (e) {
       setErro(e.message);
     } finally {
-      setLoading(false);
+      setSalvando(false);
     }
   };
 
@@ -102,7 +98,7 @@ export default function ReservarQuadra() {
       <div className={styles.page}>
         <div className={styles.sucessoBox}>
           <h2>✅ Reserva realizada com sucesso!</h2>
-          <p>{quadra.reference} — {data}</p>
+          <p>{quadra?.reference} — {data} às {horarioSelecionado}</p>
           <a href="/reservas" className={styles.btnVoltar}>Ver minhas reservas</a>
         </div>
       </div>
@@ -114,9 +110,7 @@ export default function ReservarQuadra() {
       <header className={styles.navbar}>
         <nav className={styles.navLinks}>
           {NAV_LINKS.map((link) => (
-            <a key={link.label} href={link.href} className={styles.navLink}>
-              {link.label}
-            </a>
+            <a key={link.label} href={link.href} className={styles.navLink}>{link.label}</a>
           ))}
           <button className={styles.navIcon}>🔔</button>
           <button className={styles.navIcon}>👤</button>
@@ -124,81 +118,78 @@ export default function ReservarQuadra() {
       </header>
 
       <main className={styles.main}>
-        <div className={styles.card}>
-          <div className={styles.cardLeft}>
-            <h1 className={styles.titulo}>{quadra.reference.toUpperCase()}</h1>
-            <p className={styles.info}>Endereço: {quadra.address}</p>
-            <p className={styles.info}>Preço: R$ {quadra.priceOfReference.toFixed(2).replace(".", ",")}</p>
+        {loading ? (
+          <p style={{ color: "#fff" }}>Carregando...</p>
+        ) : !quadra ? (
+          <p style={{ color: "#ff5252" }}>Quadra não encontrada.</p>
+        ) : (
+          <div className={styles.card}>
+            <div className={styles.cardLeft}>
+              <h1 className={styles.titulo}>{quadra.reference.toUpperCase()}</h1>
+              <p className={styles.info}>Preço: R$ {Number(quadra.priceOfReference).toFixed(2).replace(".", ",")}</p>
+              <p className={styles.info}>Horário: {quadra.startTime} – {quadra.endTime}</p>
 
-            <div className={styles.inputWrapper}>
-              <label className={styles.inputLabel}>Nome da reserva</label>
-              <input
-                className={styles.input}
-                placeholder="Seu nome"
-                value={nomeReserva}
-                onChange={(e) => setNomeReserva(e.target.value)}
-              />
-              {nomeValido && <span className={styles.check}>✓</span>}
-            </div>
-
-            <div className={styles.diasRow}>
-              {DIAS_SEMANA.map((dia) => (
-                <button
-                  key={dia}
-                  className={`${styles.diaBtn} ${diaSelecionado === dia ? styles.diaBtnAtivo : ""}`}
-                  onClick={() => setDiaSelecionado(dia)}
-                >
-                  {dia}
-                </button>
-              ))}
-            </div>
-
-            {diaSelecionado && (
-              <div className={styles.horarioBox}>
-                <p className={styles.horarioTitulo}>{diaSelecionado === "SAB" ? "Sábado" : diaSelecionado}</p>
-                <p className={styles.horarioInfo}>Horário início: {quadra.startTime}</p>
-                <p className={styles.horarioInfo}>Horário fim: {quadra.endTime}</p>
+              <div className={styles.inputWrapper}>
+                <label className={styles.inputLabel}>Data da reserva</label>
+                <input
+                  className={styles.input}
+                  type="date"
+                  value={data}
+                  min={new Date().toISOString().split("T")[0]}
+                  onChange={(e) => setData(e.target.value)}
+                />
               </div>
-            )}
 
-            <div className={styles.inputWrapper}>
-              <input
-                className={styles.input}
-                type="date"
-                value={data}
-                onChange={(e) => setData(e.target.value)}
-                placeholder="DD/MM/AAAA"
-              />
+              {loadingHorarios && <p className={styles.info}>Buscando horários...</p>}
+
+              {horariosDisponiveis.length > 0 && (
+                <div>
+                  <p className={styles.info}>Horários disponíveis:</p>
+                  <div className={styles.diasRow}>
+                    {horariosDisponiveis.map((h) => (
+                      <button
+                        key={h}
+                        className={`${styles.diaBtn} ${horarioSelecionado === h ? styles.diaBtnAtivo : ""}`}
+                        onClick={() => setHorarioSelecionado(h)}
+                      >
+                        {h}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {data && horariosDisponiveis.length === 0 && !loadingHorarios && (
+                <p className={styles.info}>Nenhum horário disponível para esta data.</p>
+              )}
+
+              {erro && <p className={styles.erro}>{erro}</p>}
+
+              <button
+                className={styles.btnReservar}
+                onClick={handleReservar}
+                disabled={salvando}
+              >
+                {salvando ? "Reservando..." : "Reservar"}
+              </button>
             </div>
 
-            {erro && <p className={styles.erro}>{erro}</p>}
-
-            <button
-              className={styles.btnReservar}
-              onClick={handleReservar}
-              disabled={loading}
-            >
-              {loading ? "Reservando..." : "Reservar"}
-            </button>
+            <div className={styles.cardRight}>
+              <img
+                src="/images/quadra-tennis.jpg"
+                alt={quadra.reference}
+                className={styles.quadraImg}
+              />
+            </div>
           </div>
-
-          <div className={styles.cardRight}>
-            <img
-              src={quadra.image}
-              alt={quadra.reference}
-              className={styles.quadraImg}
-            />
-          </div>
-        </div>
+        )}
       </main>
 
       <footer className={styles.footer}>
         <p className={styles.footerCopy}>© 2026 Designed by Seninha team</p>
         <nav className={styles.footerSocial}>
           {SOCIAL_LINKS.map((s) => (
-            <a key={s.label} href={s.href} className={styles.footerLink}>
-              {s.label}
-            </a>
+            <a key={s.label} href={s.href} className={styles.footerLink}>{s.label}</a>
           ))}
         </nav>
       </footer>
