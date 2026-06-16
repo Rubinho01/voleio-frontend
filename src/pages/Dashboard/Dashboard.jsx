@@ -100,15 +100,13 @@ export default function Dashboard() {
       };
 
       if (modoEdicao) {
-        // TODO: endpoint de edição quando backend implementar
-        // await fetch(`/api/courts/${quadraSelecionada.id}`, {
-        //   method: "PUT",
-        //   headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-        //   body: JSON.stringify(payload),
-        // });
-        setQuadras((prev) => prev.map((q) =>
-          q.id === quadraSelecionada.id ? { ...q, ...payload } : q
-        ));
+        const res = await fetch(`/api/courts/${quadraSelecionada.id}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+          body: JSON.stringify(payload),
+        });
+        if (!res.ok) throw new Error("Erro ao atualizar quadra.");
+        await buscarQuadras();
       } else {
         const res = await fetch("/api/courts/add", {
           method: "POST",
