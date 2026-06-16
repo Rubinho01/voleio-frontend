@@ -171,3 +171,37 @@
   font-size: 0.85rem;
   text-transform: uppercase;
 }
+
+.abasRow {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.aba {
+  background: rgba(255,255,255,0.1);
+  border: 1.5px solid rgba(255,255,255,0.3);
+  border-radius: 20px;
+  color: #fff;
+  padding: 0.4rem 1.2rem;
+  font-size: 0.88rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.abaAtiva {
+  background: #2e7d32;
+  border-color: #2e7d32;
+}
+
+.msg {
+  color: #fff;
+  font-size: 1rem;
+  margin-bottom: 1rem;
+}
+
+.msgErro {
+  color: #ff5252;
+  font-size: 1rem;
+  margin-bottom: 1rem;
+}
